@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
+        crossorigin="anonymous">
+
+    <title>Victory Net</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-dark bg-primary">
+        <span class="navbar-brand mb-0 h1"><img style="max-width:50px; margin-top: -7px; margin-right: 10px" src="logo.png" /> VictoryNet Training Dashboard</span>
+    </nav>
+    <div class="container-fluid row">
+
+        <div class="col-sm-12 col-lg-6 ">
+            <div class="card text-center" id="best-model">
+                <div class="card-body">
+                    <h1>Best Model</h1>
+                    <h3 class="card-title">{{modelName}}: {{modelLoss}}
+                       
+                    </h3>
+                    <b><a :href="'https://storage.googleapis.com/victorynet-models/'+modelName+'_trained.hdf5'">Download Model</a></b>
+                </div>
+            </div>
+            <br>
+    
+            <div class="card text-center"  id="latest-model">
+                <div class="card-body">
+                    <h3 class="card-title">{{modelName}}
+                        <span class="badge badge-primary">{{ modelStatus }}</span>
+                    </h3>
+                    <h5><i>{{modelDesc}}</i></h5>
+                    <p>Date:
+                        <b>{{modelDate}}</b>
+                    </p>
+                    <p>Training Machine:
+                        <b>{{modelMachine}}</b>
+                    </p>
+                    <p>Training Set:
+                            <b><a :href="'https://storage.googleapis.com/victorynet-envs/'+modelDataset+'.zip'">{{modelDataset}}</a></b>
+    
+                    </p>
+                    <p>Training Size:
+                        <b>{{modelTrainingSize}}</b>
+                    </p>
+                    <p>Validation Size:
+                        <b>{{modelTestingSize}}</b>
+                    </p>
+                    <p>Model:
+                        <b><a :href="'https://storage.googleapis.com/victorynet-models/'+modelName+'_trained.hdf5'">Download Model</a></b>
+    
+                    </p>
+                    <h6>Progress</h6>
+                    <div class="progress" style="height: 40px;">
+    
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" id="progress" role="progressbar" aria-valuenow="0" aria-valuemin="0"
+                            aria-valuemax="100" style="width: 0%">{{modelEpoch}}/{{modelCfgEpochs}} Epochs</div>
+                    </div>
+                    <br/>
+    
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Epoch</h5>
+                                    {{ modelEpoch }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Loss</h5>
+                                    {{ modelLoss }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Validation Loss</h5>
+                                    {{ modelValLoss }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr/>
+                    <h5>Loss Chart for Selected Run ({{modelName}})</h5>
+                    <div id="loss-chart">
+                        <!-- Plotly chart will be drawn inside this DIV -->
+                    </div>
+                    <hr/>
+                    <div class="row">
+                            <div class="col-sm">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Model Setting</h5>
+                                        <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Setting</th>
+                                                        <th scope="col">Value</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Epochs</td>
+                                                        <td>{{modelCfgEpochs}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Learning Rate</td>
+                                                        <td>{{modelCfgLearningRate}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Batch Size</td>
+                                                        <td>{{modelCfgBatchSize}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Conv 1 Filter</td>
+                                                        <td>{{modelCfgConv1Filter}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Conv 1 Kernal </td>
+                                                        <td>{{modelCfgConv1Kernal}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Conv 2 Filter</td>
+                                                        <td>{{modelCfgConv2Filter}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Conv 2 Kernal</td>
+                                                        <td>{{modelCfgConv2Kernal}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Fully Connected Layer</td>
+                                                        <td>{{modelCfgFullyConnected}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Simulation Settings</h5>
+                                        <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Setting</th>
+                                                        <th scope="col">Value</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Spin Mode</td>
+                                                        <td>{{modelEnvAutoupdate}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Lidar Points</td>
+                                                        <td>{{modelEnvLidarPoints}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Lidar Noise</td>
+                                                        <td>{{modelEnvLidarNoise * 100}}%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Lidar Failure Rate</td>
+                                                        <td>{{modelEnvLidarFailure * 100}}%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Lidar Max Range</td>
+                                                        <td>{{modelEnvLidarMaxRange}}m</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>               
+                        loss
+        
+     
+                    
+                    
+                </div>
+            </div>
+        </div>
+        
+        <br/>
+        <br/>
+        <div class="col-sm-12 col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">All Models/Runs (Click to Select Run)</h3>
+                    <div class="row " id="all-models">
+                        <div v-for="model in models" :key="model.index" v-bind:id="model.index" v-on:click="select(model.index)" class="card col-sm-4" >
+                            
+                            
+                        </div>
+    
+                        <table class="table"  >
+                            <thead>
+                                <tr>
+                                    <th scope="col">Model Name</th>
+                                    <th scope="col">Model Status</th>
+                                    <th scope="col">Model Epoch</th>
+                                    <th scope="col">Model Loss</th>
+                                    <th scope="col">Model Desc</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="model in models" :key="model.id" v-bind:id="model.id" v-on:click="select(model.index)">
+                                    <td>{{ model.info_name }}</td>
+                                    <td>{{ model.info_status }}</td>
+                                    <td>{{ model.info_epoch }}</td>
+                                    <td>{{ model.info_loss}}</td>
+                                    <td>{{ model.info_desc}}</td>
+                                </tr>
+        
+                            </tbody>
+                        </table>
+                    </div>
+    
+                    
+                    <h5>All Losses Chart</h5>
+                    <div id="allloss-chart">
+                        <!-- Plotly chart will be drawn inside this DIV -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+        crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
